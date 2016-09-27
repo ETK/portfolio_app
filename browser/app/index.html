@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html ng-app="Portfolio" lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="/" />
+  <title ng-bind="(page.title ? page.title + ' | ' : '') + page.baseTitle"></title>
+  <link href="/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/style.css" rel="stylesheet"/>
+  <script src="/jquery/dist/jquery.min.js"></script>
+  <script src="/d3/build/d3.min.js"></script>
+  <script src="/handlebars/dist/handlebars.min.js"></script>
+  <script src="/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="/angular/angular.js"></script>
+  <script src="/angular-ui-router/release/angular-ui-router.js"></script>
+  <script src="/angular-ui-bootstrap/dist/ui-bootstrap.js"></script>
+  <script src="/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js"></script>
+  <script src="/angular-utils-pagination/dirPagination.js"></script>
+  <script src="/main.js"></script>
+</head>
+<body>
+  <navbar></navbar>
+  <div id="main" ui-view></div>
+  <footer class="footer">
+    <div class="container">
+      © 2016 <a href="http://jthrees.com/">John Szymanowski</a>
+    </div>
+  </footer>
+</body>
+</html>

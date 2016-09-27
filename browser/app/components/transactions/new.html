@@ -1,0 +1,97 @@
+<h3>Add a Transaction</h3>
+<hr>
+<form name="createTransactionForm" ng-submit="createTransaction()">
+
+  <div class="form-group row">
+    <label for="account_name" class="col-sm-2 control-label">Account Name</label>
+    <div class="col-sm-10">
+      <select name="account" ng-model="newTransaction.account" ng-options="account as account.account_name for account in accounts" class="form-control">
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="trade_date" class="col-sm-2 control-label">Trade Date</label>
+    <div class="col-sm-10">
+      <input name="trade_date" ng-model="newTransaction.trade_date" type="date" class="form-control" value=""/>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="ticker" class="col-sm-2 control-label">Ticker</label>
+    <div class="col-sm-10">
+      <input name="ticker" ng-model="newTransaction.ticker" type="text" class="form-control" value=""/>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="type" class="col-sm-2 control-label">Txn Type</label>
+    <div class="col-sm-10">
+      <select name="type" ng-model="newTransaction.type" class="form-control">
+        <option selected></option>
+        <option>buy</option>
+        <option>sell</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="num_shares" class="col-sm-2 control-label">Number of Shares</label>
+    <div class="col-sm-10">
+      <input name="num_shares" ng-model="newTransaction.num_shares" type="text" class="form-control" value=""/>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="trade_px" class="col-sm-2 control-label">Trade Price</label>
+    <div class="col-sm-10">
+      <div class="input-group">
+        <div class="input-group-addon">$</div>
+        <input name="trade_px" ng-model="newTransaction.trade_px" type="text" class="form-control" value=""/>
+        <div class="input-group-addon">per share</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="gross_amt" class="col-sm-2 control-label">Gross Amount</label>
+    <div class="col-sm-10">
+      <div class="input-group">
+        <div class="input-group-addon">$</div>
+        <input name="gross_amt" ng-model="newTransaction.gross_amt" type="text" class="form-control" value=""/>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="commission" class="col-sm-2 control-label">Commission</label>
+    <div class="col-sm-10">
+      <div class="input-group">
+        <div class="input-group-addon">$</div>
+        <input name="commission" ng-model="newTransaction.commission" type="text" class="form-control" value=""/>
+      </div>
+    </div>
+  </div>
+
+    <div class="form-group row">
+      <label for="total_amt" class="col-sm-2 control-label">Total Amount</label>
+      <div class="col-sm-10">
+        <div class="input-group">
+          <div class="input-group-addon">$</div>
+          <input name="total_amt" ng-model="newTransaction.total_amt" type="text" class="form-control" value=""/>
+        </div>
+      </div>
+    </div>
+
+  <div class="form-group row">
+    <label for="notes" class="col-sm-2 control-label">Notes</label>
+    <div class="col-sm-10">
+      <textarea name="notes" ng-model="newTransaction.notes" class="form-control" rows=2 value=""></textarea>
+    </div>
+  </div>
+
+  <div class="row col-sm-offset-2 col-sm-10">
+    <button type="submit" class="btn btn-primary">submit</button>
+  </div>
+
+</form>

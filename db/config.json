@@ -1,0 +1,9 @@
+{
+  "development": {
+    "username": "root",
+    "password": null,
+    "database": "portfolio_app",
+    "dialect": "sqlite",
+    "storage": "db/database.sqlite"
+  }
+}

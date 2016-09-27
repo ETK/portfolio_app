@@ -1,0 +1,47 @@
+<h3>Add an Account</h3>
+<hr>
+<form name="createAccountForm" ng-submit="createAccount()">
+
+  <div class="form-group row">
+    <label for="broker_name" class="col-sm-2 control-label">Broker Name</label>
+    <div class="col-sm-10">
+      <input name="broker_name" ng-model="newAccount.broker_name" type="text" class="form-control" value=""/>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="group_name" class="col-sm-2 control-label">Account Group Name</label>
+    <div class="col-sm-10">
+      <input name="group_name" ng-model="newAccount.group_name" type="text" class="form-control" value=""/>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="owner_name" class="col-sm-2 control-label">Owner Name</label>
+    <div class="col-sm-10">
+      <input name="owner_name" ng-model="newAccount.owner_name" type="text" class="form-control" value=""/>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="account_name" class="col-sm-2 control-label">Account Name</label>
+    <div class="col-sm-10">
+      <input name="account_name" ng-model="newAccount.account_name" type="text" class="form-control" value=""/>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="category" class="col-sm-2 control-label">Category</label>
+    <div class="col-sm-10">
+      <select name="category" ng-model="newAccount.category" class="form-control">
+        <option>Taxable</option>
+        <option>Retirement</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row col-sm-offset-2 col-sm-10">
+    <button type="submit" class="btn btn-primary">submit</button>
+  </div>
+
+</form>

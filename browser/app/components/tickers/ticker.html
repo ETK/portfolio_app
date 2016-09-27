@@ -1,0 +1,105 @@
+<h3>Ticker // {{ ticker.ticker }} / {{ ticker.long_name }}</h3>
+<hr>
+<table class="table table-striped table-hover">
+
+  <thead>
+    <tr>
+      <th>Tkr</th>
+      <th>Nm</th>
+      <th>Cat1</th>
+      <th>Cat2</th>
+      <th>Cat3</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  <tr>
+    <th scope="row">{{ ticker.ticker }}</th>
+    <td>{{ ticker.long_name }}</td>
+    <td>{{ ticker.category_1 }}</td>
+    <td>{{ ticker.category_2 }}</td>
+    <td>{{ ticker.category_3 }}</td>
+  </tr>
+  </tbody>
+
+</table>
+
+<!-- <hr> -->
+<!-- prices -->
+<!-- <br><h4>Prices</h4>
+
+<div price-chart data="prices" id="price-chart"></div> -->
+
+<hr>
+<!-- holdings -->
+<br><h4>Holdings</h4>
+
+<table class="table table-striped table-hover">
+
+  <thead>
+    <tr>
+      <th>Account</th>
+      <th># shs</th>
+      <th>Avg trd px</th>
+      <th>Current px</th>
+      <th>Cost bsis</th>
+      <th>Curr val</th>
+      <th>P/L</th>
+      <th>Returns</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  <tr ng-repeat="holding in holdings">
+    <th scope="row"><a ui-sref="account({ accountId: holding.account.id })">{{ holding.account.account_name }}</a></td>
+    <td>{{ holding.num_shares | number: 0 }}</td>
+    <td>{{ holding.avg_trade_px | number: 2 }}</td>
+    <td>{{ holding.current_px | number: 2 }}</td>
+    <td>{{ holding.cost_basis | number: 0 }}</td>
+    <td>{{ holding.current_value | number: 0 }}</td>
+    <td>{{ holding.p_l | number: 0 }}</td>
+    <td>{{ holding.returns | number: 2 }}</td>
+  </tr>
+  </tbody>
+
+</table>
+
+<hr>
+<!-- transactions -->
+<br><h4>Transactions</h4>
+
+<table class="table table-striped table-hover">
+
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Trd Dt</th>
+      <th>Account</th>
+      <th>Typ</th>
+      <th># shs</th>
+      <th>Trd px</th>
+      <th>Gr amt</th>
+      <th>Comm</th>
+      <th>Ttl amt</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  <tr ng-repeat="transaction in transactions">
+    <th scope="row"><a href="{{ transaction.route }}">{{ transaction.id }}</a></th>
+    <td>{{ transaction.trade_date | date:'yyyy.MM.dd' }}</td>
+    <td>{{ transaction.account.account_name }}</td>
+    <td>{{ transaction.type }}</td>
+    <td>{{ transaction.num_shares | number: 2 }}</td>
+    <td>{{ transaction.trade_px | number: 2 }}</td>
+    <td>{{ transaction.gross_amt | number: 0 }}</td>
+    <td>{{ transaction.commission | number: 2 }}</td>
+    <td>{{ transaction.total_amt | number: 0 }}</td>
+  </tr>
+  </tbody>
+
+</table>
+
+
+<a ui-sref="ticker#edit({ ticker: ticker.ticker })" class="btn btn-primary">edit</a>
+<button ng-click="deleteTicker()" class="btn btn-danger">delete</button>

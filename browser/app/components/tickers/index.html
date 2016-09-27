@@ -1,0 +1,29 @@
+<h3>Tickers</h3>
+<hr>
+<table class="table table-striped table-hover">
+
+  <thead>
+    <tr>
+      <th>Tkr</th>
+      <th>Nm</th>
+      <!-- <th>Px</th> -->
+      <th>Cat1</th>
+      <th>Cat2</th>
+      <th>Cat3</th>
+    </tr>
+  </thead>
+
+  <tbody>
+  <tr ng-repeat="ticker in tickers">
+    <th scope="row"><a ui-sref="ticker({ ticker: ticker.ticker })">{{ ticker.ticker }}</a></th>
+    <td>{{ ticker.long_name }}</td>
+    <!-- <td>{{ ticker.price.close_px }}</td> -->
+    <td>{{ ticker.category_1 }}</td>
+    <td>{{ ticker.category_2 }}</td>
+    <td>{{ ticker.category_3 }}</td>
+  </tr>
+  </tbody>
+
+</table>
+
+<a href="/tickers/new" class="btn btn-success">new</a>
