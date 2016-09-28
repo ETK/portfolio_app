@@ -1,6 +1,8 @@
-app.controller('HoldingsCtrl', function($scope, HoldingsFactory, holdings, $state) {
+app.controller('HoldingsCtrl', function($scope, HoldingsFactory, groupedHoldings, $state) {
 
-  $scope.groupedHoldings = HoldingsFactory.groupHoldings(holdings);
+  $scope.groupedHoldings = groupedHoldings;
+
+  console.log($scope.groupedHoldings);
 
   $scope.displayGroup = function(group_name) {
     $scope.holdings = $scope.groupedHoldings[group_name];

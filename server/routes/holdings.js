@@ -1,10 +1,12 @@
 'use strict';
 const router = require('express').Router();
 const db = require('../../db/models').sequelize;
+const Promise = require('bluebird');
 const Holding = db.model('Holding');
 const Account = db.model('Account');
 const Price = db.model('Price');
 const Ticker = db.model('Ticker');
+const Transaction = db.model('Transaction');
 
 module.exports = router;
 
@@ -20,9 +22,17 @@ router.get('/', function (req, res, next) {
 
 // regenerate holdings
 router.get('/update', function (req, res, next) {
-  Ticker.allTickers()
-  .then(tickers => Price.current(tickers))
-  .then(prices => Holding.update(prices))
-  .then(updatedHoldings => res.json(updatedHoldings))
-  .catch(next);
+    Promise.all([
+        Transaction.findAll({ include: [{
+            model: Account,
+            as: 'account'
+        }] }),
+        Price.findAll({ where: {
+            date: { $gte: new Date(2016,4,12,0,0,0,0),
+                    $lte: new Date(2016,4,14,0,0,0,0) },
+        }}) // where clause temporary / dev purposes
+    ])
+    .spread((transactions, prices) => { console.log(prices[0]); Holding.update(transactions, prices)})
+    .then(updatedHoldings => res.json(updatedHoldings))
+    .catch(next);
 });

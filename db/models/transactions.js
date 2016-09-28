@@ -16,20 +16,6 @@ module.exports = function(sequelize, DataTypes) {
           Transaction.belongsTo(models.Account, {
             as: 'account'
           });
-        },
-        types: function() {
-          return {  buy: 'add',
-                    sell: 'remove',
-                    deposit: 'add',
-                    withdraw: 'remove',
-                    'div-cash': 'to cash',
-                    'div-reinvest': 'add',
-                    'lt gain-cash': 'to cash',
-                    'lt gain-reinvest': 'add',
-                    'st gain-cash': 'to cash',
-                    'st gain-reinvest': 'add',
-                    interest: 'add'
-                 }
         }
       },
       getterMethods: {

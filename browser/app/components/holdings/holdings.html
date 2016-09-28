@@ -44,6 +44,10 @@
       <td><b>{{ values.total.returns | number: 2 }}</b></td>
     </tr>
 
+    <!-- <pre>
+        {{ values | json }}
+    </pre> -->
+
     <tr ng-repeat="holding in values.detail" ng-if="holding.current_value > 1">
       <td><a ui-sref="account({ accountId: holding.account.id })">{{holding.account.account_name }}</a></td>
       <td>{{ holding.account.broker_name }}</td>

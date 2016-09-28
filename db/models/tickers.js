@@ -1,5 +1,7 @@
+var Ticker;
+
 module.exports = function(sequelize, DataTypes) {
-  var Ticker = sequelize.define('Ticker', {
+  Ticker = sequelize.define('Ticker', {
     ticker: { type: DataTypes.STRING, primaryKey: true },
     long_name: { type: DataTypes.STRING },
     category_1: { type: DataTypes.ENUM('stocks','bonds','other','cash') },
@@ -11,8 +13,8 @@ module.exports = function(sequelize, DataTypes) {
           Ticker.hasMany(models.Price, {
             foreignKey: 'fkey_ticker'
           });
-        }
-        // allTickers: getTickers
+        },
+        allTickers: getTickers
       },
       getterMethods: {
         route: function () {
@@ -32,14 +34,14 @@ module.exports = function(sequelize, DataTypes) {
   return Ticker;
 };
 
-// function getTickers() {
-//   var symbols = [];
-//
-//   return db.model('ticker').findAll({})
-//   .then( function(tickers) {
-//     for(var key in tickers) {
-//       symbols.push(tickers[key].ticker);
-//     }
-//     return symbols;
-//   });
-// }
+function getTickers() {
+  var symbols = [];
+
+  return Ticker.findAll({})
+  .then( function(tickers) {
+    for(var key in tickers) {
+      symbols.push(tickers[key].ticker);
+    }
+    return symbols;
+  });
+}
