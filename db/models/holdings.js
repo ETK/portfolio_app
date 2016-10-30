@@ -1,43 +1,57 @@
 var Holding;
 
 module.exports = function(sequelize, DataTypes) {
-  Holding = sequelize.define('Holding', {
-    ticker: { type: DataTypes.STRING, allowNull: false },
-    num_shares: { type: DataTypes.DECIMAL },
-    avg_trade_px: { type: DataTypes.DECIMAL },
-    current_px: { type: DataTypes.DECIMAL },
-    cost_basis: { type: DataTypes.DECIMAL },
-    total_commission: { type: DataTypes.DECIMAL, defaultValue: 0 },
-    current_value: { type: DataTypes.DECIMAL },
-    p_l: { type: DataTypes.DECIMAL },
-    returns: { type: DataTypes.DECIMAL },
-    }, {
-      classMethods: {
-        associate: function(models) {
-          Holding.belongsTo(models.Account, {
-            as: 'account'
-          });
-        },
-        update: regenerateHoldings
-      },
-      getterMethods: {
-        route: function () {
-          return '/holdings/' + this.id;
-        }
-      }
-    }
-  );
+    Holding = sequelize.define('Holding',
 
-  return Holding;
+        // attributes
+        {
+            ticker: { type: DataTypes.STRING, allowNull: false },
+            num_shares: { type: DataTypes.DECIMAL },
+            avg_trade_px: { type: DataTypes.DECIMAL },
+            current_px: { type: DataTypes.DECIMAL },
+            cost_basis: { type: DataTypes.DECIMAL },
+            total_commission: { type: DataTypes.DECIMAL, defaultValue: 0 },
+            current_value: { type: DataTypes.DECIMAL },
+            p_l: { type: DataTypes.DECIMAL },
+            returns: { type: DataTypes.DECIMAL },
+        },
+
+        // options
+        {
+            classMethods: {
+                associate: function(models) {
+                    Holding.belongsTo(models.Account, {
+                        as: 'account'
+                    });
+                },
+                scopes: function(models) {
+                    Holding.addScope('defaultScope', {
+                        include: [{ model: models.Account, as: 'account'}],
+                    }, {
+                        override: true
+                    });
+                },
+                update: regenerateHoldings
+            },
+
+            getterMethods: {
+                route: function () {
+                    return '/holdings/' + this.id;
+                }
+            }
+        }
+    );
+
+    return Holding;
 };
 
 
-function regenerateHoldings(transactions, prices) {
-  console.log('in Holdings.update() function')
+function regenerateHoldings(dbTransactions, dbPrices) {
   var holdings  = [], // list of holdings objects to append to database
       holdingsIdx = {}, // lookup of indices for holdings array; format => [ticker][account ID] = index
       index, // temporary index for a given holdings object
       price, // temporary price for a given holdings object
+      prices = {},
       transactionTypes = {  buy: 'add',
                 sell: 'remove',
                 deposit: 'add',
@@ -52,14 +66,18 @@ function regenerateHoldings(transactions, prices) {
              },
       saleCostBasis;
 
+
   // clear table
   return Holding.destroy({ truncate: true })
 
   // get all transactions + accounts, sorted by date
   .then( function () {
-    console.log('Holdings table destroyed')
-    console.log('Calculating holdings...')
-    transactions.forEach( function(transaction) {
+
+    dbPrices.forEach( function(price) {
+        prices[price.px_ticker] = price.close_px;
+    });
+
+    dbTransactions.forEach( function(transaction) {
       // get appropriate index for this transaction, to add to the holdings array
       if( holdingsIdx[transaction.ticker] ) { // has the ticker been seen yet?
         if( holdingsIdx[transaction.ticker][transaction.account.id] ) { // has this account + ticker been seen yet?
@@ -92,19 +110,17 @@ function regenerateHoldings(transactions, prices) {
 
 
       // calculate current values, P&L, returns
-      holdings[index].current_px = (prices[transaction.ticker]) ? prices[transaction.ticker].price : 0;
+      holdings[index].current_px = (prices[transaction.ticker]) ? prices[transaction.ticker] : 0;
       holdings[index].current_value = holdings[index].current_px * holdings[index].num_shares;
       holdings[index].p_l = holdings[index].current_value - holdings[index].cost_basis;
     });
-
-    console.log('holdings calculation complete')
 
     return Holding.bulkCreate(holdings);
   })
 }
 
 function initializeHolding( ticker, accountId ) {
-  return {  ticker: ticker,
+  return { ticker: ticker,
             num_shares: 0,
             avg_trade_px: 0,
             current_px: 0,

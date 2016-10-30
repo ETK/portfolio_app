@@ -13,7 +13,6 @@ module.exports = router;
 // get all
 router.get('/', function (req, res, next) {
   Holding.findAll({
-    include: [{ model: Account, as: 'account'}],
     where: { ticker: { $ne: 'Cash' } }
   })
   .then(holdings => res.json(holdings))
@@ -32,7 +31,7 @@ router.get('/update', function (req, res, next) {
                     $lte: new Date(2016,4,14,0,0,0,0) },
         }}) // where clause temporary / dev purposes
     ])
-    .spread((transactions, prices) => { console.log(prices[0]); Holding.update(transactions, prices)})
+    .spread((transactions, prices) => Holding.update(transactions, prices))
     .then(updatedHoldings => res.json(updatedHoldings))
     .catch(next);
 });

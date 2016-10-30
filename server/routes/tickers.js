@@ -32,7 +32,7 @@ router.get('/:ticker', function (req, res, next) {
   var findingTickers = Ticker.findOne({ where: { ticker: req.params.ticker }, include: [Price] });
   var findingTransactions = Transaction.findAll({
     where: { ticker: req.params.ticker },
-    include: [{model: Account, as: 'account'}]  });
+    include: [{model: Account, as: 'account'}] });
   var findingHoldings = Holding.findAll({ where: { ticker: req.params.ticker } });
   Promise.all([findingTickers, findingTransactions, findingHoldings])
   .spread(function (ticker, transactions, holdings) {
@@ -46,7 +46,6 @@ router.get('/:ticker', function (req, res, next) {
 });
 // edit -- action
 router.put('/:ticker', function (req, res, next) {
-  console.log('body',req.body)
   Ticker.update(req.body, { where: { ticker: req.params.ticker }, returning: true })
   .then(function () {
     return Ticker.findOne({ where: { ticker: req.params.ticker } });

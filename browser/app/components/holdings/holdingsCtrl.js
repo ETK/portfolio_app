@@ -1,18 +1,17 @@
-app.controller('HoldingsCtrl', function($scope, HoldingsFactory, groupedHoldings, $state) {
+app.controller('HoldingsCtrl', function($scope, HoldingsFactory, groupedHoldings) {
 
-  $scope.groupedHoldings = groupedHoldings;
+    $scope.groupedHoldings = groupedHoldings;
 
-  console.log($scope.groupedHoldings);
+    $scope.displayGroup = function(groupName) {
+        $scope.groupName = groupName;
+        $scope.holdings = $scope.groupedHoldings[groupName];
+    }
 
-  $scope.displayGroup = function(group_name) {
-    $scope.holdings = $scope.groupedHoldings[group_name];
-  }
-
-  $scope.updateHoldings = function() {
-    HoldingsFactory.update()
-    .then( function() {
-      $state.go('holdings');
-    }); // TODO: need to repull Holdings to get account info ?
-  }
+    $scope.updateHoldings = function() {
+        HoldingsFactory.update()
+        .then(() => HoldingsFactory.fetchAll())
+        .then(rawHoldings => HoldingsFactory.groupHoldings(rawHoldings))
+        .then(holdings => { $scope.holdings = holdings[$scope.groupName] });
+    }
 
 });
