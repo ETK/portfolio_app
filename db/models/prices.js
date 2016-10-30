@@ -1,6 +1,5 @@
 const yf = require('yahoo-finance');
 const _ = require('lodash');
-const Promise = require('bluebird');
 var Price;
 
 module.exports = function(sequelize, DataTypes) {
