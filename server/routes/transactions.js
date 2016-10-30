@@ -17,16 +17,23 @@ router.get('/', function (req, res, next) {
   .catch(next);
 });
 
-// create
+// create - handles multiple transactions
 router.post('/', function (req, res, next) {
-  Account.findOrCreate({ where: { account_name: req.body.account.account_name } })
-  .spread(function (account) {
-    return Transaction.create(req.body)
-    .then(transaction => transaction.setAccount(account));
-  })
-  .then(transaction => res.json(transaction))
-  .catch(next);
+    Transaction.bulkCreate(req.body)
+    .then(transactions => res.json(transactions))
+    .catch(next);
 });
+
+// create - old
+// router.post('/', function (req, res, next) {
+//   Account.findOrCreate({ where: { account_name: req.body.account.account_name } })
+//   .spread(function (account) {
+//     return Transaction.create(req.body)
+//     .then(transaction => transaction.setAccount(account));
+//   })
+//   .then(transaction => res.json(transaction))
+//   .catch(next);
+// });
 
 
 // SPECIFIC TRANSACTION

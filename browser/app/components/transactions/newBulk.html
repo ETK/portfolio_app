@@ -1,0 +1,36 @@
+<h3>Add a Transaction</h3>
+<hr>
+<form name="createTransactionsForm" ng-submit="createTransactions()">
+
+    <table class="table table-striped table-hover">
+
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Acct</th>
+                <th>Trd Dt</th>
+                <th>Tkr</th>
+                <th>Typ</th>
+                <th># shs</th>
+                <th>Trd px</th>
+                <th>Gr amt</th>
+                <th>Comm</th>
+                <th>Ttl amt</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr transaction-row ng-repeat="transaction in transactions" accounts="accounts" transaction="transaction"></tr>
+
+        </tbody>
+
+  </table>
+
+  <button type="submit" class="btn btn-primary">submit</button>
+
+  <pre>
+      {{ transactions | json }}
+  </pre>
+
+</form>

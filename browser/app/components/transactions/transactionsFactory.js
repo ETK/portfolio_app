@@ -18,6 +18,12 @@ app.factory('TransactionsFactory', function($http) {
       .then(res => res.data);
     },
 
+    bulkCreate: function(transactions) {
+        // console.log(transactions)
+      return $http.post('/api/transactions', transactions)
+      .then(res => res.data);
+    },
+
     edit: function(transactionId, data) {
       return $http.put('/api/transactions/' + transactionId, data)
       .then(res => res.data);

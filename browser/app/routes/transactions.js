@@ -21,6 +21,17 @@ app.config( function($stateProvider) {
     controller: 'TransactionsFormCtrl'
   });
 
+  // bulk create new transactions
+  $stateProvider.state('transactions#newBulk', {
+    resolve: {
+      accounts: function(AccountsFactory) { return AccountsFactory.fetchAll(); },
+      transactionData: function() {}
+    },
+    url: '/transactions/new_bulk',
+    templateUrl: '/components/transactions/newBulk.html',
+    controller: 'TransactionsFormCtrl'
+  });
+
   // view a single transaction
   $stateProvider.state('transaction', {
     resolve: {

@@ -1,0 +1,41 @@
+<tr>
+    <th scope="row"></th>
+    <td>
+        <select name="account" ng-model="transaction.accountId" ng-options="account.id as account.account_name for account in accounts" class="form-control">
+        </select>
+    </td>
+    <td>
+        <input name="trade_date" ng-model="transaction.trade_date" type="date" class="form-control" value=""/>
+    </td>
+    <td>
+        <input name="ticker" ng-model="transaction.ticker" type="text" class="form-control" value=""/>
+    </td>
+    <td>
+        <select name="type" ng-model="transaction.type" class="form-control">
+            <option selected></option>
+            <option>buy</option>
+            <option>div-reinvest</option>
+            <option>div-cash</option>
+            <option>lt gain-reinvest</option>
+            <option>lt gain-cash</option>
+            <option>st gain-reinvest</option>
+            <option>st gain-cash</option>
+            <option>sell</option>
+        </select>
+    </td>
+    <td>
+        <input name="num_shares" ng-model="transaction.num_shares" ng-change="recalculate()" type="text" class="form-control" value=""/>
+    </td>
+    <td>
+        <input name="trade_px" ng-model="transaction.trade_px" ng-change="recalculate()" type="text" class="form-control" value=""/>
+    </td>
+    <td>
+        {{ transaction.gross_amt | number: 2 }}
+    </td>
+    <td>
+        <input name="commission" ng-model="transaction.commission" ng-change="recalculate()" type="text" class="form-control" value=""/>
+    </td>
+    <td>
+        {{ transaction.total_amt | number: 2 }}
+    </td>
+</tr>

@@ -4,5 +4,6 @@ browser/assets/main.js
 browser/assets/style.css
 .DS_Store
 *.sqlite
+*.sqlite-journal
 *.psd
 .env
