@@ -47,12 +47,12 @@ module.exports = function(sequelize, DataTypes) {
 
 
 function regenerateHoldings(dbTransactions, dbPrices) {
-  var holdings  = [], // list of holdings objects to append to database
+  var holdings = [], // list of holdings objects to append to database
       holdingsIdx = {}, // lookup of indices for holdings array; format => [ticker][account ID] = index
       index, // temporary index for a given holdings object
       price, // temporary price for a given holdings object
       prices = {},
-      transactionTypes = {  buy: 'add',
+      transactionTypes = { buy: 'add',
                 sell: 'remove',
                 deposit: 'add',
                 withdraw: 'remove',

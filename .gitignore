@@ -2,6 +2,7 @@ node_modules
 npm-debug.log
 browser/assets/main.js
 browser/assets/style.css
+db/maintenance
 .DS_Store
 *.sqlite
 *.sqlite-journal

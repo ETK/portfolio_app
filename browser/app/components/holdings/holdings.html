@@ -44,17 +44,13 @@
       <td><b>{{ values.total.returns | number: 2 }}</b></td>
     </tr>
 
-    <!-- <pre>
-        {{ values | json }}
-    </pre> -->
-
-    <tr ng-repeat="holding in values.detail" ng-if="holding.current_value > 1">
+    <tr ng-repeat="holding in values.detail" ng-if="holding.num_shares > 0">
       <td><a ui-sref="account({ accountId: holding.account.id })">{{holding.account.account_name }}</a></td>
       <td>{{ holding.account.broker_name }}</td>
       <td>{{ holding.account.group_name }}</td>
       <td>{{ holding.account.owner_name }}</td>
       <td><a ui-sref="ticker({ ticker: holding.ticker })">{{ holding.ticker }}</a></td>
-      <td>{{ holding.num_shares | number: 0 }}</td>
+      <td>{{ holding.num_shares | number: 2 }}</td>
       <td>{{ holding.avg_trade_px | number: 2 }}</td>
       <td>{{ holding.current_px | number: 2 }}</td>
       <td>{{ holding.cost_basis | number: 0 }}</td>
