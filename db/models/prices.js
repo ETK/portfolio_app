@@ -1,4 +1,5 @@
 const yf = require('yahoo-finance');
+const sequelize = require('sequelize');
 const _ = require('lodash');
 var Price;
 
@@ -18,7 +19,10 @@ module.exports = function(sequelize, DataTypes) {
       },
       classMethods: {
         update: updatePrices,
-        current: getCurrentPrices
+        current: getCurrentPrices,
+        latest: function() {
+            return sequelize.query('SELECT * FROM Prices INNER JOIN (SELECT px_ticker, MAX(date) AS \'date\' FROM Prices GROUP BY px_ticker) AS latest ON Prices.px_ticker = latest.px_ticker AND Prices.date = latest.date')
+        }
       }
     }
   );

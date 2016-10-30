@@ -15,8 +15,8 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/latest', function(req, res, next) {
-    db.query('SELECT * FROM Prices INNER JOIN (SELECT px_ticker, MAX(date) AS \'date\' FROM Prices GROUP BY px_ticker) AS latest ON Prices.px_ticker = latest.px_ticker AND Prices.date = latest.date')
-    .spread(prices => res.json(prices))
+    Price.latest()
+    .spread(prices => res.json(prices[0]))
     .catch(next);
 });
 

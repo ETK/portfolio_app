@@ -50,7 +50,6 @@ function regenerateHoldings(dbTransactions, dbPrices) {
   var holdings = [], // list of holdings objects to append to database
       holdingsIdx = {}, // lookup of indices for holdings array; format => [ticker][account ID] = index
       index, // temporary index for a given holdings object
-      price, // temporary price for a given holdings object
       prices = {},
       transactionTypes = { buy: 'add',
                 sell: 'remove',
@@ -66,6 +65,8 @@ function regenerateHoldings(dbTransactions, dbPrices) {
              },
       saleCostBasis;
 
+      console.log(dbPrices)
+
 
   // clear table
   return Holding.destroy({ truncate: true })
@@ -76,6 +77,8 @@ function regenerateHoldings(dbTransactions, dbPrices) {
     dbPrices.forEach( function(price) {
         prices[price.px_ticker] = price.close_px;
     });
+
+    console.log(prices)
 
     dbTransactions.forEach( function(transaction) {
       // get appropriate index for this transaction, to add to the holdings array

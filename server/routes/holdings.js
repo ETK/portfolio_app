@@ -26,12 +26,9 @@ router.get('/update', function (req, res, next) {
             model: Account,
             as: 'account'
         }] }),
-        Price.findAll({ where: {
-            date: { $gte: new Date(2016,4,12,0,0,0,0),
-                    $lte: new Date(2016,4,14,0,0,0,0) },
-        }}) // where clause temporary / dev purposes
+        Price.latest()
     ])
-    .spread((transactions, prices) => Holding.update(transactions, prices))
+    .spread((transactions, prices) => Holding.update(transactions, prices[0]))
     .then(updatedHoldings => res.json(updatedHoldings))
     .catch(next);
 });
