@@ -1,4 +1,6 @@
 const yf = require('yahoo-finance');
+const _ = require('lodash');
+const Promise = require('bluebird');
 var Price;
 
 module.exports = function(sequelize, DataTypes) {
@@ -27,18 +29,27 @@ module.exports = function(sequelize, DataTypes) {
 
 
 function updatePrices(symbols) {
-  return yf.historical({
-    symbols: symbols,
-    from: '2010-12-31',
-    to: '2016-05-14',
-    period: 'd'
-  }).then(function (result) {
-    _.each(result, function(quotes, symbol) {
-      _.each(quotes, function(quote) {
-        Price.create({px_ticker: quote.symbol, date: quote.date, close_px: quote.close });
-      })
+    console.log('Requesting price updates from Yahoo Finance...')
+    return yf.historical({
+        symbols: symbols,
+        from: '2015-12-31',
+        to: '2016-10-30',
+        period: 'd'
     })
-  })
+    .then(function (result) {
+        var filteredPrices = [];
+        _.each(result, function(quotes, symbol) {
+            _.each(quotes, function(quote) {
+                filteredPrices.push({
+                    px_ticker: quote.symbol,
+                    date: quote.date,
+                    close_px: quote.close
+                });
+            });
+        });
+        console.log('Saving prices to database...')
+        return Price.bulkCreate(filteredPrices);
+    });
 }
 
 function getCurrentPrices(symbols) {
