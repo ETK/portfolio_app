@@ -6,14 +6,14 @@ module.exports = function(sequelize, DataTypes) {
         // attributes
         {
             ticker: { type: DataTypes.STRING, allowNull: false },
-            num_shares: { type: DataTypes.DECIMAL },
-            avg_trade_px: { type: DataTypes.DECIMAL },
-            current_px: { type: DataTypes.DECIMAL },
-            cost_basis: { type: DataTypes.DECIMAL },
-            total_commission: { type: DataTypes.DECIMAL, defaultValue: 0 },
-            current_value: { type: DataTypes.DECIMAL },
-            p_l: { type: DataTypes.DECIMAL },
-            returns: { type: DataTypes.DECIMAL },
+            num_shares: { type: DataTypes.INTEGER },
+            avg_trade_px: { type: DataTypes.INTEGER },
+            current_px: { type: DataTypes.INTEGER },
+            cost_basis: { type: DataTypes.INTEGER },
+            total_commission: { type: DataTypes.INTEGER, defaultValue: 0 },
+            current_value: { type: DataTypes.INTEGER },
+            p_l: { type: DataTypes.INTEGER },
+            returns: { type: DataTypes.INTEGER },
         },
 
         // options
@@ -32,12 +32,6 @@ module.exports = function(sequelize, DataTypes) {
                     });
                 },
                 update: regenerateHoldings
-            },
-
-            getterMethods: {
-                route: function () {
-                    return '/holdings/' + this.id;
-                }
             }
         }
     );
@@ -46,80 +40,68 @@ module.exports = function(sequelize, DataTypes) {
 };
 
 
-function regenerateHoldings(dbTransactions, dbPrices) {
-  var holdings = [], // list of holdings objects to append to database
-      holdingsIdx = {}, // lookup of indices for holdings array; format => [ticker][account ID] = index
-      index, // temporary index for a given holdings object
-      prices = {},
-      transactionTypes = { buy: 'add',
-                sell: 'remove',
-                deposit: 'add',
-                withdraw: 'remove',
-                'div-cash': 'to cash',
-                'div-reinvest': 'add',
-                'lt gain-cash': 'to cash',
-                'lt gain-reinvest': 'add',
-                'st gain-cash': 'to cash',
-                'st gain-reinvest': 'add',
-                interest: 'add'
-             },
-      saleCostBasis;
+function regenerateHoldings(dbTxns, dbPrices) {
+    var holdings = [], // list of holdings objects to append to database
+        holdingsIdx = {}, // lookup of indices for holdings array; format => [ticker][account ID] = index
+        txnTypes = { buy: 'add',
+            sell: 'remove',
+            deposit: 'add',
+            withdraw: 'remove',
+            'div-cash': 'to cash',
+            'div-reinvest': 'add',
+            'lt gain-cash': 'to cash',
+            'lt gain-reinvest': 'add',
+            'st gain-cash': 'to cash',
+            'st gain-reinvest': 'add',
+            interest: 'add'
+        },
+        index, // temporary index for a given holdings object
+        saleCostBasis; // temporary cost basis caching for sell txns
 
-      console.log(dbPrices)
-
-
-  // clear table
-  return Holding.destroy({ truncate: true })
-
-  // get all transactions + accounts, sorted by date
-  .then( function () {
-
+    // build prices object
+    var prices = {};
     dbPrices.forEach( function(price) {
         prices[price.px_ticker] = price.close_px;
     });
 
-    console.log(prices)
-
-    dbTransactions.forEach( function(transaction) {
-      // get appropriate index for this transaction, to add to the holdings array
-      if( holdingsIdx[transaction.ticker] ) { // has the ticker been seen yet?
-        if( holdingsIdx[transaction.ticker][transaction.account.id] ) { // has this account + ticker been seen yet?
-          index = holdingsIdx[transaction.ticker][transaction.account.id]; // index has already been created
-        } else { // ticker exists, but not for this account; create a new index
-          holdingsIdx[transaction.ticker][transaction.account.id] = holdings.length
-          index = holdingsIdx[transaction.ticker][transaction.account.id];
-          holdings[index] = initializeHolding( transaction.ticker, transaction.account.id);
+    // process transaction => build holdings
+    dbTxns.forEach( function(txn) {
+        // determine appropriate index for this txn in the holdings array
+        if(!holdingsIdx[txn.ticker]) holdingsIdx[txn.ticker] = {}; // ticker does not exist
+        if(!holdingsIdx[txn.ticker][txn.account.id]) { // ticker + account does not exist
+            holdingsIdx[txn.ticker][txn.account.id] = holdings.length + 1; // create new index
         }
-      } else { // ticker does not exist
-        holdingsIdx[transaction.ticker] = {};
-        holdingsIdx[transaction.ticker][transaction.account.id] = holdings.length
-        index = holdingsIdx[transaction.ticker][transaction.account.id];
-        holdings[index] = initializeHolding( transaction.ticker, transaction.account.id);
-      }
+        index = holdingsIdx[txn.ticker][txn.account.id];
+        if(!holdings[index]) holdings[index] = initializeHolding(txn.ticker, txn.account.id); // initialize holding with 0 balances
 
-      // add transaction figures
-      if( transactionTypes[transaction.type] === 'add') {
-        holdings[index].num_shares += +transaction.num_shares;
-        holdings[index].cost_basis += +transaction.gross_amt;
-      } else if( transactionTypes[transaction.type] === 'remove') { // ISSUES WITH COST BASIS IMPACT FROM SALES
-        saleCostBasis = +transaction.num_shares * holdings[index].avg_trade_px; // using avg. cost basis method
-        holdings[index].num_shares -= +transaction.num_shares;
-        holdings[index].cost_basis -= saleCostBasis;
-        holdings[index].p_l += (+transaction.gross_amt - saleCostBasis); // add realized gains/losses to P&L
-      } else if( transactionTypes[transaction.type] === 'to cash') {
-        // unhandled at present
-      }
-      if( holdings[index].num_shares > 0 ) holdings[index].avg_trade_px = holdings[index].cost_basis / holdings[index].num_shares;
+        // process transaction
+        if( txnTypes[txn.type] === 'add') {
+            holdings[index].num_shares += +txn.num_shares;
+            holdings[index].cost_basis += +txn.gross_amt;
+        } else if( txnTypes[txn.type] === 'remove') { // TODO: issues with cost basis impact from sales
+            saleCostBasis = +txn.num_shares * holdings[index].avg_trade_px / 10000; // using avg. cost basis method
+            holdings[index].num_shares -= +txn.num_shares;
+            holdings[index].cost_basis -= saleCostBasis;
+            holdings[index].p_l += (+txn.gross_amt - saleCostBasis); // add realized gains/losses to P&L
+        } else if( txnTypes[txn.type] === 'to cash') {
+            // unhandled at present
+        } else {
+            console.log('Unhandled transaction in holdings calculation: txn # ' + txn.id);
+        }
+        if( holdings[index].num_shares > 0 ) {
+            holdings[index].avg_trade_px = Math.floor(holdings[index].cost_basis / holdings[index].num_shares * 10000);
+        }
 
 
-      // calculate current values, P&L, returns
-      holdings[index].current_px = (prices[transaction.ticker]) ? prices[transaction.ticker] : 0;
-      holdings[index].current_value = holdings[index].current_px * holdings[index].num_shares;
-      holdings[index].p_l = holdings[index].current_value - holdings[index].cost_basis;
+        // calculate current values, P&L, returns
+        holdings[index].current_px = (prices[txn.ticker]) ? prices[txn.ticker] : 0;
+        holdings[index].current_value =  Math.floor(holdings[index].current_px * holdings[index].num_shares / 10000);
+        holdings[index].p_l = holdings[index].current_value - holdings[index].cost_basis;
     });
 
-    return Holding.bulkCreate(holdings);
-  })
+  // write to database
+  return Holding.destroy({ truncate: true })
+  .then(() => Holding.bulkCreate(holdings));
 }
 
 function initializeHolding( ticker, accountId ) {

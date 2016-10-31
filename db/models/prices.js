@@ -7,7 +7,7 @@ module.exports = function(sequelize, DataTypes) {
   Price = sequelize.define('Price', {
     px_ticker: { type: DataTypes.STRING, allowNull: false },
     date: { type: DataTypes.DATE, allowNull: false },
-    close_px: { type: DataTypes.FLOAT },
+    close_px: { type: DataTypes.INTEGER },
     }, {
       indexes: [
         { fields: ['px_ticker'] }
@@ -46,7 +46,7 @@ function updatePrices(symbols) {
                 filteredPrices.push({
                     px_ticker: quote.symbol,
                     date: quote.date,
-                    close_px: quote.close
+                    close_px: Math.floor(quote.close * 10000)
                 });
             });
         });

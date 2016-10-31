@@ -38,10 +38,10 @@
       <td></td>
       <td></td>
       <td></td>
-      <td><b>{{ values.total.cost_basis | number: 0 }}</b></td>
-      <td><b>{{ values.total.current_value | number: 0 }}</b></td>
-      <td><b>{{ values.total.p_l | number: 0 }}</b></td>
-      <td><b>{{ values.total.returns | number: 2 }}</b></td>
+      <td><b>{{ values.total.cost_basis | normalize: 0 }}</b></td>
+      <td><b>{{ values.total.current_value | normalize: 0 }}</b></td>
+      <td><b>{{ values.total.p_l | normalize: 0 }}</b></td>
+      <td><b>{{ values.total.returns | normalize: 2 }}</b></td>
     </tr>
 
     <tr ng-repeat="holding in values.detail" ng-if="holding.num_shares > 0">
@@ -50,13 +50,13 @@
       <td>{{ holding.account.group_name }}</td>
       <td>{{ holding.account.owner_name }}</td>
       <td><a ui-sref="ticker({ ticker: holding.ticker })">{{ holding.ticker }}</a></td>
-      <td>{{ holding.num_shares | number: 2 }}</td>
-      <td>{{ holding.avg_trade_px | number: 2 }}</td>
-      <td>{{ holding.current_px | number: 2 }}</td>
-      <td>{{ holding.cost_basis | number: 0 }}</td>
-      <td>{{ holding.current_value | number: 0 }}</td>
-      <td>{{ holding.p_l | number: 0 }}</td>
-      <td>{{ holding.returns | number: 2 }}</td>
+      <td>{{ holding.num_shares | normalize: 3 }}</td>
+      <td>{{ holding.avg_trade_px | normalize: 2 }}</td>
+      <td>{{ holding.current_px | normalize: 2 }}</td>
+      <td>{{ holding.cost_basis | normalize: 0 }}</td>
+      <td>{{ holding.current_value | normalize: 0 }}</td>
+      <td>{{ holding.p_l | normalize: 0 }}</td>
+      <td>{{ holding.returns | normalize: 2 }}</td>
     </tr>
 
     </tbody>
