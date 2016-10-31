@@ -11,7 +11,7 @@ module.exports = router;
 router.get('/', function (req, res, next) {
   Transaction.findAll({
     include: [{ model: Account, as: 'account'}],
-    order: [['trade_date','DESC']]
+    order: [['trade_date','ASC']] // ascending sort required for holdings cost basis calculation
   })
   .then(transactions => res.json(transactions))
   .catch(next);

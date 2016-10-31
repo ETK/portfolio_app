@@ -40,6 +40,7 @@ module.exports = function(sequelize, DataTypes) {
 };
 
 
+// transactions must be sorted in ascending order
 function regenerateHoldings(dbTxns, dbPrices) {
     var holdings = [], // list of holdings objects to append to database
         holdingsIdx = {}, // lookup of indices for holdings array; format => [ticker][account ID] = index
@@ -79,7 +80,7 @@ function regenerateHoldings(dbTxns, dbPrices) {
             holdings[index].num_shares += +txn.num_shares;
             holdings[index].cost_basis += +txn.gross_amt;
         } else if( txnTypes[txn.type] === 'remove') { // TODO: issues with cost basis impact from sales
-            saleCostBasis = +txn.num_shares * holdings[index].avg_trade_px / 10000; // using avg. cost basis method
+            saleCostBasis = (txn.num_shares * holdings[index].avg_trade_px) / 10000; // using avg. cost basis method
             holdings[index].num_shares -= +txn.num_shares;
             holdings[index].cost_basis -= saleCostBasis;
             holdings[index].p_l += (+txn.gross_amt - saleCostBasis); // add realized gains/losses to P&L
